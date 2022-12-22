@@ -1,0 +1,74 @@
+python-argcomplete (1.12.3-0.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * NUR:
+    + refreshed patches.
+    + add build dependency on 'fish' and 'python3-pip'.
+  * Set Rules-Requires-Root to 'no'.
+  * Use HTTPS links in package data.
+  * Bump Standards-Version to 4.5.1.
+
+ -- Marc Dequènes (Duck) <Duck@DuckCorp.org>  Tue, 28 Sep 2021 23:29:56 +0900
+
+python-argcomplete (1.8.1-1.1) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Drop python2 support; Closes: #937580
+
+ -- Sandro Tosi <morph@debian.org>  Tue, 14 Jan 2020 16:48:14 -0500
+
+python-argcomplete (1.8.1-1) unstable; urgency=medium
+
+  * Fix Vcs-Git URL in debian/control
+  * Add binary helpers to python3-argcomplete package.
+    Thanks to Jeremy Bicha <jbicha@ubuntu.com> for the patch (Closes: #765180)
+  * Update upstream GPG key
+  * New upstream version 1.8.1
+  * Bump debhelper compat level to 10
+  * Enable test suit for both python2 and python3
+  * Refresh manpages
+  * Bump standards-version to 3.9.8.0 (no changes)
+  * Add python-argcomplete-tcsh3 helper to python3-argcomplete
+
+ -- Marco Nenciarini <mnencia@debian.org>  Tue, 24 Jan 2017 18:05:43 +0100
+
+python-argcomplete (1.0.0-1) unstable; urgency=medium
+
+  * Add signature verification to debian/watch
+  * Imported Upstream version 1.0.0 (Closes:  #812106)
+  * Use pypi.debian.net redirector service in debian/watch file
+  * Bump Standards-Version to 9.3.7.0. No changes required.
+  * Use a secure transport for anonymous git repository access in debian/control
+
+ -- Marco Nenciarini <mnencia@debian.org>  Wed, 03 Feb 2016 00:51:25 +0100
+
+python-argcomplete (0.8.1-1) unstable; urgency=medium
+
+  [ Piotr Ożarowski ]
+  * New upstream release
+    - fixes install_requires (removes hadrcoded distribute; closes: #731825)
+  * Add python3-argcomplete binary package (closes: #731238)
+  * Switch dh build system to pybuild
+
+ -- Marco Nenciarini <mnencia@debian.org>  Thu, 09 Oct 2014 01:46:46 +0200
+
+python-argcomplete (0.6.9-1) unstable; urgency=medium
+
+  * Imported Upstream version 0.6.9
+  * Bump standards-version to 3.9.5.0 (no changes)
+
+ -- Marco Nenciarini <mnencia@debian.org>  Wed, 29 Jan 2014 22:22:52 +0100
+
+python-argcomplete (0.5.4-1) unstable; urgency=low
+
+  * Imported Upstream version 0.5.4
+  * Remove declare-argparse-dep patch (merged upstream)
+  * Canonicalize VCS-* field URI in debian/control
+
+ -- Marco Nenciarini <mnencia@debian.org>  Mon, 17 Jun 2013 17:45:47 +0200
+
+python-argcomplete (0.3.3-1) unstable; urgency=low
+
+  * Initial release (Closes: #697608)
+
+ -- Marco Nenciarini <mnencia@debian.org>  Wed, 09 Jan 2013 17:33:31 +0100

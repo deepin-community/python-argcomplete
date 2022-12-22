@@ -1,0 +1,31 @@
+Source: python-argcomplete
+Maintainer: Marco Nenciarini <mnencia@debian.org>
+Section: python
+Priority: optional
+Build-Depends: debhelper (>= 10),
+ dh-python, python3-all, python3-setuptools, tcsh, fish,
+ python3-wheel, python3-pexpect, python3-coverage, python3-flake8,
+ python3-pip
+Standards-Version: 4.5.1
+Vcs-Git: https://salsa.debian.org/hansto-guest/python-argcomplete.git
+Vcs-Browser: https://salsa.debian.org/hansto-guest/python-argcomplete
+Rules-Requires-Root: no
+
+Package: python3-argcomplete
+Architecture: all
+Depends: ${misc:Depends}, ${python3:Depends}
+Description: bash tab completion for argparse (for Python 3)
+ Argcomplete provides easy, extensible command line tab completion of
+ arguments for your Python script.
+ .
+ It makes two assumptions:
+ .
+  * You're using bash as your shell
+  * You're using argparse to manage your command line arguments/options
+ .
+ Argcomplete is particularly useful if your program has lots of
+ options or subparsers, and if your program can dynamically suggest
+ completions for your argument/option values (for example, if the user
+ is browsing resources over the network).
+ .
+ This package provides the module for Python 3.x.
