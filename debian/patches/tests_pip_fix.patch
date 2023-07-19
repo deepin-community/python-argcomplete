@@ -1,6 +1,6 @@
 --- a/test/test.py
 +++ b/test/test.py
-@@ -1250,6 +1250,9 @@
+@@ -1237,6 +1237,9 @@
  class TestBashGlobal(TestBash):
      install_cmd = 'eval "$(activate-global-python-argcomplete --dest=-)"'
  
@@ -10,7 +10,7 @@
      def test_python_completion(self):
          self.sh.run_command('cd ' + TEST_DIR)
          self.assertEqual(self.sh.run_command('python3 ./prog basic f\t'), 'foo\r\n')
-@@ -1285,6 +1288,7 @@
+@@ -1272,6 +1275,7 @@
              self.sh.run_command('cd ' + os.getcwd())
              self.sh.run_command('export PATH=$PATH:./bin')
              self.sh.run_command('export PYTHONPATH=.:$PYTHONPATH')

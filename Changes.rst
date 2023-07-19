@@ -1,3 +1,16 @@
+Changes for v2.0.0 (2022-01-03)
+===============================
+
+-  Truncate input after cursor. Fixes #351 (#352)
+
+-  Support of path completion in fish #327 (#359)
+
+-  Drop support for Python 2.7 and 3.5 (#361)
+
+-  Add support for Python 3.10 (#356)
+
+-  Test, documentation, and release infrastructure improvements
+
 Changes for v1.12.3 (2021-04-19)
 ================================
 
@@ -257,17 +270,17 @@ Version 0.8.6 (2015-04-11)
 
 Version 0.8.5 (2015-04-07)
 ==========================
-- Fix issues related to using argcomplete in a REPL environement.
+- Fix issues related to using argcomplete in a REPL environment.
 - New helper method for custom completion display.
 - Expand test suite; formatting cleanup.
 
 Version 0.8.4 (2014-12-11)
 ==========================
-- Fix issue related to using argcomplete in a REPL environement. Thanks to @wapiflapi (pull request #91).
+- Fix issue related to using argcomplete in a REPL environment. Thanks to @wapiflapi (pull request #91).
 
 Version 0.8.3 (2014-11-09)
 ==========================
-- Fix multiple issues related to using argcomplete in a REPL environement. Thanks to @wapiflapi (pull request #90).
+- Fix multiple issues related to using argcomplete in a REPL environment. Thanks to @wapiflapi (pull request #90).
 
 Version 0.8.2 (2014-11-03)
 ==========================

@@ -1,11 +1,3 @@
---- a/test/prog
-+++ b/test/prog
-@@ -1,4 +1,4 @@
--#!/usr/bin/env python
-+#!/usr/bin/env python3
- # PYTHON_ARGCOMPLETE_OK
- """Test script used by test.TestBash."""
- from __future__ import print_function
 --- a/test/test.py
 +++ b/test/test.py
 @@ -1,4 +1,4 @@
@@ -14,39 +6,7 @@
  # -*- coding: utf-8 -*-
  
  from __future__ import absolute_import, division, print_function, unicode_literals
-@@ -1252,11 +1252,11 @@
- 
-     def test_python_completion(self):
-         self.sh.run_command('cd ' + TEST_DIR)
--        self.assertEqual(self.sh.run_command('python ./prog basic f\t'), 'foo\r\n')
-+        self.assertEqual(self.sh.run_command('python3 ./prog basic f\t'), 'foo\r\n')
- 
-     def test_python_filename_completion(self):
-         self.sh.run_command('cd ' + TEST_DIR)
--        self.assertEqual(self.sh.run_command('python ./pro\tbasic f\t'), 'foo\r\n')
-+        self.assertEqual(self.sh.run_command('python3 ./pro\tbasic f\t'), 'foo\r\n')
- 
-     def test_python_not_executable(self):
-         """Test completing a script that cannot be run directly."""
-@@ -1268,7 +1268,7 @@
-             # Ensure prog is no longer able to be run as "./prog".
-             self.assertIn('<<126>>', self.sh.run_command('./prog; echo "<<$?>>"'))
-             # Ensure completion still functions when run via python.
--            self.assertEqual(self.sh.run_command('python ./prog basic f\t'), 'foo\r\n')
-+            self.assertEqual(self.sh.run_command('python3 ./prog basic f\t'), 'foo\r\n')
- 
-     def test_python_module(self):
-         """Test completing a module run with python -m."""
-@@ -1278,7 +1278,7 @@
-             open('package/__init__.py', 'w').close()
-             shutil.copy(prog, 'package/prog.py')
-             self.sh.run_command('cd ' + os.getcwd())
--            self.assertEqual(self.sh.run_command('python -m package.prog basic f\t'), 'foo\r\n')
-+            self.assertEqual(self.sh.run_command('python3 -m package.prog basic f\t'), 'foo\r\n')
- 
-     def _test_console_script(self, package=False, wheel=False):
-         with TempDir(prefix='test_dir_py', dir='.'):
-@@ -1286,7 +1286,7 @@
+@@ -1273,7 +1273,7 @@
              self.sh.run_command('export PATH=$PATH:./bin')
              self.sh.run_command('export PYTHONPATH=.:$PYTHONPATH')
              test_package = os.path.join(TEST_DIR, 'test_package')
