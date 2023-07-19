@@ -290,7 +290,21 @@ By default help string is added as completion description.
 
 You can disable this feature by removing ``_ARGCOMPLETE_DFS`` variable, e.g::
 
-    register-python-argcomplete --shell fish my-awesome-script | grep -v _ARGCOMPLETE_DFS | .
+    register-python-argcomplete --shell fish my-awesome-script | grep -v _ARGCOMPLETE_DFS | source
+
+Absolute Path Completion
+~~~~~~~~~~~~~~~~~~~~~~~~
+If script is not in path you still can register it's completion by specifying absolute path::
+
+    register-python-argcomplete --shell fish /home/awesome-user/my-awesome-script | source
+
+then you can complete it by using ``/home/awesome-user/my-awesome-script`` or ``./my-awesome-script``.
+
+Unfortunately ``~/my-awesome-script`` would not work, to fix it you can run::
+
+    register-python-argcomplete --shell fish my-awesome-script -e /home/awesome-user/my-awesome-script | source
+
+This would enable completion for any ``my-awesome-script`` in any location.
 
 Git Bash Support
 ----------------
@@ -316,7 +330,7 @@ This option can also be used in combination with the other supported shells.
 
 Python Support
 --------------
-Argcomplete requires Python 2.7 or 3.5+.
+Argcomplete requires Python 3.6+.
 
 Common Problems
 ---------------

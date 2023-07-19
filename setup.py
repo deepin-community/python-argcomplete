@@ -9,7 +9,7 @@ importlib_backport_requires = ["importlib-metadata >= 0.23, < 5"]
 
 setup(
     name='argcomplete',
-    version='1.12.3',
+    version='2.0.0',
     url='https://github.com/kislyuk/argcomplete',
     project_urls={
         "Documentation": "https://kislyuk.github.io/argcomplete",
@@ -22,12 +22,11 @@ setup(
     author_email='kislyuk@gmail.com',
     description='Bash tab completion for argparse',
     long_description=open('README.rst').read(),
+    python_requires='>=3.6',
     install_requires=install_requires,
     tests_require=tests_require,
     extras_require={
         "test": tests_require,
-        ':python_version == "2.7"': importlib_backport_requires,
-        ':python_version == "3.5"': importlib_backport_requires,
         ':python_version == "3.6"': importlib_backport_requires,
         ':python_version == "3.7"': importlib_backport_requires
     },
@@ -45,13 +44,12 @@ setup(
         'Operating System :: MacOS :: MacOS X',
         'Operating System :: POSIX',
         'Programming Language :: Python',
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
         'Programming Language :: Python :: Implementation :: CPython',
         'Programming Language :: Python :: Implementation :: PyPy',
         'Development Status :: 5 - Production/Stable',

@@ -1,3 +1,41 @@
+python-argcomplete (2.0.0-2) UNRELEASED; urgency=medium
+
+  * Fix manpage generation and regenerate.
+  * Add help support to python-argcomplete-check-easy-install-script
+    (Closes: #944433).
+
+ -- Marc Dequènes (Duck) <Duck@DuckCorp.org>  Wed, 21 Sep 2022 11:25:13 +0900
+
+python-argcomplete (2.0.0-1) unstable; urgency=medium
+
+  + Salvaging package (Closes: #1010301):
+    + package under the Python Team umbrella
+    + Update VCS fields
+  * New upstream release (Closes: #977499):
+    + py3k-scripts.patch not needed anymore
+    + adapted/refreshed patches
+  * Repair lost changes when preparing 1.12.3-0.1:
+    + fix changelog
+    + readd Breaks+Replace on python-argcomplete
+  * Switch to watch format 4.
+  * Bumped Standards-Version to 4.6.0 (no changes required).
+  * Add upstream metadata.
+  * Stop suffixing scripts with Python version: it diverges from
+    upstream, causes some mess and is not needed anymore now that Python
+    2 is out (Closes: #949386).
+  * Bump debhelper compatibility level to 13.
+
+ -- Marc Dequènes (Duck) <Duck@DuckCorp.org>  Thu, 26 May 2022 14:43:10 +0900
+
+python-argcomplete (1.12.3-0.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * debian/rules
+    - provide workaround for tests to not fail (Closes: #1010941).
+      Upstream issue: https://github.com/kislyuk/argcomplete/issues/337
+
+ -- Yaroslav Halchenko <debian@onerussian.com>  Fri, 13 May 2022 13:07:30 -0400
+
 python-argcomplete (1.12.3-0.1) unstable; urgency=medium
 
   * Non-maintainer upload.
@@ -9,6 +47,36 @@ python-argcomplete (1.12.3-0.1) unstable; urgency=medium
   * Bump Standards-Version to 4.5.1.
 
  -- Marc Dequènes (Duck) <Duck@DuckCorp.org>  Tue, 28 Sep 2021 23:29:56 +0900
+
+python-argcomplete (1.8.1-1.5) unstable; urgency=medium
+
+  * Non-maintainer upload
+  * debian/rules: Unexport TERM to avoid test failure (Closes: #873149)
+
+ -- Graham Inggs <ginggs@debian.org>  Sat, 27 Feb 2021 11:30:37 +0000
+
+python-argcomplete (1.8.1-1.4) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * debian/rules: Set LC_ALL to C.UTF-8 instead of unsetting it (Closes:
+    #981846)
+
+ -- Sebastian Ramacher <sramacher@debian.org>  Wed, 10 Feb 2021 21:41:38 +0100
+
+python-argcomplete (1.8.1-1.3) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Actually, use an unversioned Breaks+Replace on python-argcomplete;
+    Closes: #948976
+
+ -- Sandro Tosi <morph@debian.org>  Thu, 16 Jan 2020 17:49:36 -0500
+
+python-argcomplete (1.8.1-1.2) unstable; urgency=medium
+
+  * Non-maintainer upload.
+  * Add Breaks+Replace on python-argcomplete (<< 1.8.1-1); Closes: #948976
+
+ -- Sandro Tosi <morph@debian.org>  Thu, 16 Jan 2020 16:06:17 -0500
 
 python-argcomplete (1.8.1-1.1) unstable; urgency=medium
 

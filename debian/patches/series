@@ -1,3 +1,3 @@
-py3k-scripts.patch
 py3k-tests.patch
 tests_pip_fix.patch
+python-argcomplete-check-easy-install-script_help_fix.patch
