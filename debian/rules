@@ -5,6 +5,11 @@
 #export DH_VERBOSE=1
 export PYBUILD_NAME=argcomplete
 
+export PYBUILD_TEST_CUSTOM=1
+export PYBUILD_TEST_ARGS=PATH={home_dir}/scripts:$$PATH \
+	PYTHONPATH={build_dir} \
+	{interpreter} {dir}/test/test.py -v
+
 # Avoid failures in unit tests
 # See https://github.com/kislyuk/argcomplete/issues/199
 unexport LC_ALL
@@ -12,19 +17,9 @@ unexport LC_ALL
 %:
 	dh $@ --with python3 --buildsystem=pybuild
 
-# Workaround
-# https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=1010941
-# https://github.com/kislyuk/argcomplete/issues/337#issuecomment-771835184
-override_dh_auto_test:
-	echo "set enable-bracketed-paste off" > .inputrc
-	INPUTRC=$(CURDIR)/.inputrc dh_auto_test
-
-override_dh_auto_clean:
-	rm -f .inputrc
-	dh_auto_clean
-
+include /usr/share/dpkg/pkg-info.mk
 generate_manpages:
-	VERSION=$$(python3 setup.py -V) ; \
+	set -e ; \
 	for file in \
 		activate-global-python-argcomplete \
 		python-argcomplete-check-easy-install-script \
@@ -32,7 +27,7 @@ generate_manpages:
 	do \
 		cp -f scripts/$$file debian/pregenerated_manpages/$$file ; \
 		chmod a+x debian/pregenerated_manpages/$$file ; \
-		PYTHONPATH=. help2man --version-string="$$VERSION" \
+		PYTHONPATH=. help2man --version-string="$(DEB_VERSION)" \
 			--no-info --include=debian/help2man.include \
 			--name "$$file - argcomplete utility script" \
 			-o debian/pregenerated_manpages/$$file.1 --no-discard-stderr \

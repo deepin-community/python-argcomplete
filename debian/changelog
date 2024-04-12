@@ -1,10 +1,36 @@
-python-argcomplete (2.0.0-2) UNRELEASED; urgency=medium
+python-argcomplete (3.1.4-1) unstable; urgency=medium
 
+  * Team upload.
+
+  [ Marc Dequènes (Duck) ]
   * Fix manpage generation and regenerate.
   * Add help support to python-argcomplete-check-easy-install-script
     (Closes: #944433).
 
- -- Marc Dequènes (Duck) <Duck@DuckCorp.org>  Wed, 21 Sep 2022 11:25:13 +0900
+  [ Stefano Rivera ]
+  * New upstream release.
+  * Refresh patches.
+  * Drop PGP verification from watch file, PyPI doesn't provide signatures any
+    more.
+  * Build-Depend on zsh and python3-setuptools-scm, now required.
+  * Drop inputrc workaround, no longer needed.
+  * Build with pybuild-plugin-pyproject.
+  * Improve patch descriptions.
+  * Point the tests at the staged scripts and module.
+  * Mark Build-Depends with <!nocheck>.
+  * Drop Build-Depends: python3-coverage and python3-flake8, no longer
+    required.
+  * Add autopkgtest.
+  * Clean correctly. (Closes: #1046886)
+  * debian/rules generate_manpages:
+    - set -e
+    - Use pkg-info.mk to determine version.
+  * Activate global bash and zsh completions (Closes: #944469).
+  * Update manpages.
+  * Bump Standards-Version to 4.6.2, no changes needed.
+  * Update copyright.
+
+ -- Stefano Rivera <stefanor@debian.org>  Wed, 08 Nov 2023 16:18:12 +0200
 
 python-argcomplete (2.0.0-1) unstable; urgency=medium
 
