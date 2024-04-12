@@ -1,0 +1,12 @@
+Tests: unittests
+Restrictions: allow-stderr
+Depends:
+ fish,
+ python3-all,
+ python3-argcomplete,
+ python3-pexpect,
+ python3-pip,
+ python3-setuptools,
+ python3-wheel,
+ tcsh,
+ zsh

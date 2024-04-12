@@ -1,6 +1,20 @@
+From: Debian Python Team <team+python@tracker.debian.org>
+Date: Sat, 4 Nov 2023 10:34:21 +0200
+Subject: Write a pydistutils configuration file before executing pip
+
+This avoids tripping over Debian's posix_prefix default installation
+scheme
+
+Forwarded: not-needed
+---
+ test/test.py | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/test/test.py b/test/test.py
+index 8217cbe..8334b79 100755
 --- a/test/test.py
 +++ b/test/test.py
-@@ -1237,6 +1237,9 @@
+@@ -1319,6 +1319,9 @@ class TestZsh(TestBashZshBase, unittest.TestCase):
  class TestBashGlobal(TestBash):
      install_cmd = 'eval "$(activate-global-python-argcomplete --dest=-)"'
  
@@ -8,13 +22,13 @@
 +        self.sh.run_command('rm -f ~/.pydistutils.cfg')
 +
      def test_python_completion(self):
-         self.sh.run_command('cd ' + TEST_DIR)
-         self.assertEqual(self.sh.run_command('python3 ./prog basic f\t'), 'foo\r\n')
-@@ -1272,6 +1275,7 @@
-             self.sh.run_command('cd ' + os.getcwd())
-             self.sh.run_command('export PATH=$PATH:./bin')
-             self.sh.run_command('export PYTHONPATH=.:$PYTHONPATH')
+         self.sh.run_command("cd " + TEST_DIR)
+         self.assertEqual(self.sh.run_command("python3 ./prog basic f\t"), "foo\r\n")
+@@ -1354,6 +1357,7 @@ class TestBashGlobal(TestBash):
+             self.sh.run_command("cd " + os.getcwd())
+             self.sh.run_command("export PATH=$PATH:./bin")
+             self.sh.run_command("export PYTHONPATH=.:$PYTHONPATH")
 +            self.sh.run_command('echo -e "[install]\nprefix=" > ~/.pydistutils.cfg')
-             test_package = os.path.join(TEST_DIR, 'test_package')
-             command = 'pip3 install {} --target .'.format(test_package)
+             test_package = os.path.join(TEST_DIR, "test_package")
+             command = "pip3 install {} --target .".format(test_package)
              if not wheel:

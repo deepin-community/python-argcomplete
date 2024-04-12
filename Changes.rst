@@ -1,3 +1,171 @@
+Changes for v3.1.4 (2023-11-01)
+===============================
+
+-  Call \_default as a fallback in zsh global completion
+
+Changes for v3.1.3 (2023-11-01)
+===============================
+
+-  Use homebrew prefix by default
+
+-  zsh: Allow to use external script (#453)
+
+-  Add support for Python 3.12 and drop EOL 3.6 and 3.7 (#449)
+
+Changes for v3.1.3 (2023-11-01)
+===============================
+
+-  Use homebrew prefix by default
+
+-  zsh: Allow to use external script (#453)
+
+-  Add support for Python 3.12 and drop EOL 3.6 and 3.7 (#449)
+
+Changes for v3.1.2 (2023-09-16)
+===============================
+
+-  Ensure Python 3.12+ compatibility in check_console_script (#448)
+
+Changes for v3.1.1 (2023-06-11)
+===============================
+
+-  Search through asdf shims
+
+-  Use \` as escape character in PowerShell (#434)
+
+Changes for v3.1.0 (2023-06-10)
+===============================
+
+-  setup.py -> pyproject.toml migration start (#427)
+
+-  Improve user install logic in activate-global-python-argcomplete
+   (#437)
+
+-  Ensure Python 3.7 compatibility in check_console_script (#436)
+
+-  ZSH implementation fixes (#431, #433)
+
+-  Documentation improvements
+
+Changes for v3.0.8 (2023-04-23)
+===============================
+
+-  Test suite shell wrapper: Accept OSError on exit
+
+Changes for v3.0.7 (2023-04-23)
+===============================
+
+-  Test suite: Use general regex to cut zsh reset ANSI sequences (#425)
+
+Changes for v3.0.6 (2023-04-22)
+===============================
+
+-  Allow importlib-metadata 6.x; skip test failures on Python 3.7 (#420,
+   #424)
+
+-  Note completers can return iterables of strings, not just lists
+   (#422)
+
+-  Documentation and test improvements
+
+Changes for v3.0.5 (2023-03-25)
+===============================
+
+-  Call \_default as fallback in zsh global completion hook
+
+-  Begin support for mapping-emitting completers
+
+Changes for v3.0.4 (2023-03-21)
+===============================
+
+-  activate-global-python-argcomplete: do not overwrite existing dotfile
+   in user directory
+
+-  Add NOTICE file
+
+-  Establish long term name for split_line as
+   argcomplete.lexers.split_line
+
+Changes for v3.0.3 (2023-03-20)
+===============================
+
+-  Re-add split_line to API (#419)
+
+Changes for v3.0.2 (2023-03-19)
+===============================
+
+Fix zsh default completion issues
+
+Changes for v3.0.1 (2023-03-19)
+===============================
+
+-  Fix zsh autoload issues
+
+Changes for v3.0.0 (2023-03-19)
+===============================
+
+-  Fully support zsh. Argcomplete now supports completion descriptions
+   and global completion in zsh.
+
+-  Clean up top level namespace.
+
+-  Documentation and test improvements.
+
+Changes for v2.1.2 (2023-03-17)
+===============================
+
+-  Test infrastructure improvements
+
+-  Indicate that there is no support commitment for fish and tcsh shells
+
+Changes for v2.1.1 (2023-03-06)
+===============================
+
+-  Documentation and test improvements
+
+Changes for v2.1.0 (2023-03-06)
+===============================
+
+-  Remove scripts for contrib-supported shells from global namespace
+
+Changes for v2.0.6 (2023-03-06)
+===============================
+
+-  setup.py: exclude test.\* subpackages from find_packages (#406)
+
+-  Support PowerShell (#405)
+
+-  CI updates
+
+Changes for v2.0.5 (2023-03-04)
+===============================
+
+-  Revert “Support powershell (#392)”
+
+Changes for v2.0.4 (2023-03-04)
+===============================
+
+-  Fix interrupted release (v2.0.1)
+
+Changes for v2.0.3 (2023-03-04)
+===============================
+
+-  Fix interrupted release (v2.0.1)
+
+Changes for v2.0.2 (2023-03-04)
+===============================
+
+-  Fix interrupted release (v2.0.1)
+
+Changes for v2.0.1 (2023-03-04)
+===============================
+
+-  Support powershell (#392)
+
+-  Update importlib-metadata dependency to include versions 5.x (#389)
+
+-  Test and documentation improvements
+
 Changes for v2.0.0 (2022-01-03)
 ===============================
 

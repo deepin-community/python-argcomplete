@@ -3,11 +3,20 @@ Maintainer: Debian Python Team <team+python@tracker.debian.org>
 Uploaders: Marc Dequènes (Duck) <Duck@DuckCorp.org>
 Section: python
 Priority: optional
-Build-Depends: debhelper-compat (= 13),
- dh-python, python3-all, python3-setuptools, tcsh, fish,
- python3-wheel, python3-pexpect, python3-coverage, python3-flake8,
- python3-pip
-Standards-Version: 4.6.1
+Build-Depends:
+ debhelper-compat (= 13),
+ dh-python,
+ fish <!nocheck>,
+ pybuild-plugin-pyproject,
+ python3-all,
+ python3-pexpect <!nocheck>,
+ python3-pip <!nocheck>,
+ python3-setuptools,
+ python3-setuptools-scm,
+ python3-wheel <!nocheck>,
+ tcsh <!nocheck>,
+ zsh <!nocheck>
+Standards-Version: 4.6.2
 Vcs-Git: https://salsa.debian.org/python-team/packages/python-argcomplete.git
 Vcs-Browser: https://salsa.debian.org/python-team/packages/python-argcomplete
 Rules-Requires-Root: no

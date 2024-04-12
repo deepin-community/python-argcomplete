@@ -1,12 +1,12 @@
-argcomplete - Bash tab completion for argparse
-==============================================
+argcomplete - Bash/zsh tab completion for argparse
+==================================================
 *Tab complete all the things!*
 
-Argcomplete provides easy, extensible command line tab completion of arguments for your Python script.
+Argcomplete provides easy, extensible command line tab completion of arguments for your Python application.
 
 It makes two assumptions:
 
-* You're using bash as your shell (limited support for zsh, fish, and tcsh is available)
+* You're using bash or zsh as your shell
 * You're using `argparse <http://docs.python.org/3/library/argparse.html>`_ to manage your command line arguments/options
 
 Argcomplete is particularly useful if your program has lots of options or subparsers, and if your program can
@@ -17,16 +17,17 @@ Installation
 ------------
 ::
 
-    pip3 install argcomplete
+    pip install argcomplete
     activate-global-python-argcomplete
 
-See `Activating global completion`_ below for details about the second step (or if it reports an error).
+See `Activating global completion`_ below for details about the second step.
 
-Refresh your bash environment (start a new shell or ``source /etc/profile``).
+Refresh your shell environment (start a new shell).
 
 Synopsis
 --------
-Python code (e.g. ``my-awesome-script``):
+Add the ``PYTHON_ARGCOMPLETE_OK`` marker and a call to ``argcomplete.autocomplete()`` to your Python application as
+follows:
 
 .. code-block:: python
 
@@ -39,9 +40,12 @@ Python code (e.g. ``my-awesome-script``):
     args = parser.parse_args()
     ...
 
-Shellcode (only necessary if global completion is not activated - see `Global completion`_ below), to be put in e.g. ``.bashrc``::
+Register your Python application with your shell's completion framework by running ``register-python-argcomplete``::
 
-    eval "$(register-python-argcomplete my-awesome-script)"
+    eval "$(register-python-argcomplete my-python-app)"
+
+Quotes are significant; the registration will fail without them. See `Global completion`_ below for a way to enable
+argcomplete generally without registering each application individually.
 
 argcomplete.autocomplete(*parser*)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -78,8 +82,9 @@ readline-style. Callable completers are simpler. They are called with the follow
 * ``parsed_args``: The result of argument parsing so far (the ``argparse.Namespace`` args object normally returned by
   ``ArgumentParser.parse_args()``).
 
-Completers should return their completions as a list of strings. An example completer for names of environment
-variables might look like this:
+Completers can return their completions as an iterable of strings or a mapping (dict) of strings to their
+descriptions (zsh will display the descriptions as context help alongside completions). An example completer for names
+of environment variables might look like this:
 
 .. code-block:: python
 
@@ -159,9 +164,9 @@ If you have a useful completer to add to the `completer library
 Readline-style completers
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 The readline_ module defines a completer protocol in rlcompleter_. Readline-style completers are also supported by
-argcomplete, so you can use the same completer object both in an interactive readline-powered shell and on the bash
-command line. For example, you can use the readline-style completer provided by IPython_ to get introspective
-completions like you would get in the IPython shell:
+argcomplete, so you can use the same completer object both in an interactive readline-powered shell and on the command
+line. For example, you can use the readline-style completer provided by IPython_ to get introspective completions like
+you would get in the IPython shell:
 
 .. _readline: http://docs.python.org/3/library/readline.html
 .. _rlcompleter: http://docs.python.org/3/library/rlcompleter.html#completer-objects
@@ -195,153 +200,72 @@ can override this validation check by supplying the ``validator`` keyword to ``a
 
 .. code-block:: python
 
-    def my_validator(current_input, keyword_to_check_against):
-        # Pass through ALL options even if they don't all start with 'current_input'
-        return True
+    def my_validator(completion_candidate, current_input):
+        """Complete non-prefix substring matches."""
+        return current_input in completion_candidate
 
     argcomplete.autocomplete(parser, validator=my_validator)
 
 Global completion
 -----------------
-In global completion mode, you don't have to register each argcomplete-capable executable separately. Instead, bash
+In global completion mode, you don't have to register each argcomplete-capable executable separately. Instead, the shell
 will look for the string **PYTHON_ARGCOMPLETE_OK** in the first 1024 bytes of any executable that it's running
 completion for, and if it's found, follow the rest of the argcomplete protocol as described above.
 
-Additionally, completion is activated for scripts run as ``python <script>`` and ``python -m <module>``.
-This also works for alternate Python versions (e.g. ``python3`` and ``pypy``), as long as that version of Python has
-argcomplete installed.
+Additionally, completion is activated for scripts run as ``python <script>`` and ``python -m <module>``. If you're using
+multiple Python versions on the same system, the version being used to run the script must have argcomplete installed.
 
 .. admonition:: Bash version compatibility
 
- Global completion requires bash support for ``complete -D``, which was introduced in bash 4.2. On OS X or older Linux
- systems, you will need to update bash to use this feature. Check the version of the running copy of bash with
- ``echo $BASH_VERSION``. On OS X, install bash via `Homebrew <http://brew.sh/>`_ (``brew install bash``), add
- ``/usr/local/bin/bash`` to ``/etc/shells``, and run ``chsh`` to change your shell.
-
- Global completion is not currently compatible with zsh.
+ When using bash, global completion requires bash support for ``complete -D``, which was introduced in bash 4.2. Since
+ Mac OS ships with an outdated version of Bash (3.2), you can either use zsh or install a newer version of bash using
+ `Homebrew <http://brew.sh/>`_ (``brew install bash`` - you will also need to add ``/opt/homebrew/bin/bash`` to
+ ``/etc/shells``, and run ``chsh`` to change your shell). You can check the version of the running copy of bash with
+ ``echo $BASH_VERSION``.
 
 .. note:: If you use setuptools/distribute ``scripts`` or ``entry_points`` directives to package your module,
  argcomplete will follow the wrapper scripts to their destination and look for ``PYTHON_ARGCOMPLETE_OK`` in the
  destination code.
 
-If you choose not to use global completion, or ship a bash completion module that depends on argcomplete, you must
-register your script explicitly using ``eval "$(register-python-argcomplete my-awesome-script)"``. Standard bash
-completion registration roules apply: namely, the script name is passed directly to ``complete``, meaning it is only tab
-completed when invoked exactly as it was registered. In the above example, ``my-awesome-script`` must be on the path,
-and the user must be attempting to complete it by that name. The above line alone would **not** allow you to complete
-``./my-awesome-script``, or ``/path/to/my-awesome-script``.
-
+If you choose not to use global completion, or ship a completion module that depends on argcomplete, you must register
+your script explicitly using ``eval "$(register-python-argcomplete my-python-app)"``. Standard completion module
+registration rules apply: namely, the script name is passed directly to ``complete``, meaning it is only tab completed
+when invoked exactly as it was registered. In the above example, ``my-python-app`` must be on the path, and the user
+must be attempting to complete it by that name. The above line alone would **not** allow you to complete
+``./my-python-app``, or ``/path/to/my-python-app``.
 
 Activating global completion
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The script ``activate-global-python-argcomplete`` will try to install the file
-``bash_completion.d/python-argcomplete`` (`see on GitHub`_) into an appropriate location on your system
-(``/etc/bash_completion.d/`` or ``~/.bash_completion.d/``). If it
-fails, but you know the correct location of your bash completion scripts directory, you can specify it with ``--dest``::
-
-    activate-global-python-argcomplete --dest=/path/to/bash_completion.d
-
-Otherwise, you can redirect its shellcode output into a file::
-
-    activate-global-python-argcomplete --dest=- > file
-
-The file's contents should then be sourced in e.g. ``~/.bashrc``.
-
-.. _`see on GitHub`: https://github.com/kislyuk/argcomplete/blob/master/argcomplete/bash_completion.d/python-argcomplete
+The script ``activate-global-python-argcomplete`` installs the global completion script
+`bash_completion.d/_python-argcomplete <https://github.com/kislyuk/argcomplete/blob/master/argcomplete/bash_completion.d/_python-argcomplete>`_
+into an appropriate location on your system for both bash and zsh. The specific location depends on your platform and
+whether you installed argcomplete system-wide using ``sudo`` or locally (into your user's home directory).
 
 Zsh Support
-------------
-To activate completions for zsh you need to have ``bashcompinit`` enabled in zsh::
-
-    autoload -U bashcompinit
-    bashcompinit
-
-Afterwards you can enable completion for your scripts with ``register-python-argcomplete``::
-
-    eval "$(register-python-argcomplete my-awesome-script)"
-
-Tcsh Support
-------------
-To activate completions for tcsh use::
-
-    eval `register-python-argcomplete --shell tcsh my-awesome-script`
-
-The ``python-argcomplete-tcsh`` script provides completions for tcsh.
-The following is an example of the tcsh completion syntax for
-``my-awesome-script`` emitted by ``register-python-argcomplete``::
-
-    complete my-awesome-script 'p@*@`python-argcomplete-tcsh my-awesome-script`@'
-
-Fish Support
-------------
-To activate completions for fish use::
-
-    register-python-argcomplete --shell fish my-awesome-script | source
-
-or create new completion file, e.g::
-
-    register-python-argcomplete --shell fish my-awesome-script > ~/.config/fish/completions/my-awesome-script.fish
-
-Completion Description For Fish
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-By default help string is added as completion description.
-
-.. image:: docs/fish_help_string.png
-
-You can disable this feature by removing ``_ARGCOMPLETE_DFS`` variable, e.g::
-
-    register-python-argcomplete --shell fish my-awesome-script | grep -v _ARGCOMPLETE_DFS | source
-
-Absolute Path Completion
-~~~~~~~~~~~~~~~~~~~~~~~~
-If script is not in path you still can register it's completion by specifying absolute path::
-
-    register-python-argcomplete --shell fish /home/awesome-user/my-awesome-script | source
-
-then you can complete it by using ``/home/awesome-user/my-awesome-script`` or ``./my-awesome-script``.
-
-Unfortunately ``~/my-awesome-script`` would not work, to fix it you can run::
-
-    register-python-argcomplete --shell fish my-awesome-script -e /home/awesome-user/my-awesome-script | source
-
-This would enable completion for any ``my-awesome-script`` in any location.
-
-Git Bash Support
-----------------
-Due to limitations of file descriptor inheritance on Windows,
-Git Bash not supported out of the box. You can opt in to using
-temporary files instead of file descriptors for for IPC
-by setting the environment variable ``ARGCOMPLETE_USE_TEMPFILES``,
-e.g. by adding ``export ARGCOMPLETE_USE_TEMPFILES=1`` to ``~/.bashrc``.
-
-For full support, consider using Bash with the
-Windows Subsystem for Linux (WSL).
-
-External argcomplete script
----------------------------
-To register an argcomplete script for an arbitrary name, the ``--external-argcomplete-script`` argument of the ``register-python-argcomplete`` script can be used::
-
-    eval "$(register-python-argcomplete --external-argcomplete-script /path/to/script arbitrary-name)"
-
-This allows, for example, to use the auto completion functionality of argcomplete for an application not written in Python. 
-The command line interface of this program must be additionally implemented in a Python script with argparse and argcomplete and whenever the application is called the registered external argcomplete script is used for auto completion.
-
-This option can also be used in combination with the other supported shells.
+-----------
+Argcomplete supports zsh. On top of plain completions like in bash, zsh allows you to see argparse help strings as
+completion descriptions. All shellcode included with argcomplete is compatible with both bash and zsh, so the same
+completer commands ``activate-global-python-argcomplete`` and ``eval "$(register-python-argcomplete my-python-app)"``
+work for zsh as well.
 
 Python Support
 --------------
-Argcomplete requires Python 3.6+.
+Argcomplete requires Python 3.7+.
+
+Support for other shells
+------------------------
+Argcomplete maintainers provide support only for the bash and zsh shells on Linux and MacOS. For resources related to
+other shells and platforms, including fish, tcsh, xonsh, powershell, and Windows, please see the
+`contrib <https://github.com/kislyuk/argcomplete/tree/develop/contrib>`_ directory.
 
 Common Problems
 ---------------
-If global completion is not completing your script, bash may have registered a
-default completion function::
+If global completion is not completing your script, bash may have registered a default completion function::
 
-    $ complete | grep my-awesome-script
-    complete -F _minimal my-awesome-script
+    $ complete | grep my-python-app
+    complete -F _minimal my-python-app
 
-You can fix this by restarting your shell, or by running
-``complete -r my-awesome-script``.
+You can fix this by restarting your shell, or by running ``complete -r my-python-app``.
 
 Debugging
 ---------
@@ -361,7 +285,6 @@ Links
 * `Documentation <https://kislyuk.github.io/argcomplete/>`_
 * `Package distribution (PyPI) <https://pypi.python.org/pypi/argcomplete>`_
 * `Change log <https://github.com/kislyuk/argcomplete/blob/master/Changes.rst>`_
-* `xontrib-argcomplete <https://github.com/anki-code/xontrib-argcomplete>`_ - support argcomplete in `xonsh <https://github.com/xonsh/xonsh>`_ shell
 
 Bugs
 ~~~~
@@ -369,7 +292,9 @@ Please report bugs, issues, feature requests, etc. on `GitHub <https://github.co
 
 License
 -------
-Licensed under the terms of the `Apache License, Version 2.0 <http://www.apache.org/licenses/LICENSE-2.0>`_.
+Copyright 2012-2023, Andrey Kislyuk and argcomplete contributors. Licensed under the terms of the
+`Apache License, Version 2.0 <http://www.apache.org/licenses/LICENSE-2.0>`_. Distribution of the LICENSE and NOTICE
+files with source copies of this package and derivative works is **REQUIRED** as specified by the Apache License.
 
 .. image:: https://github.com/kislyuk/argcomplete/workflows/Python%20package/badge.svg
         :target: https://github.com/kislyuk/argcomplete/actions
