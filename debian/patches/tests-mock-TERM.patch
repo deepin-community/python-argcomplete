@@ -1,0 +1,23 @@
+Description: Fix zsh-related tests failure when TERM variable is set
+ When running zsh-related tests in the Ubuntu autopkgtest infrastructure, the
+ TERM environment variable is set to "linux". This causes the test-suite to
+ fail because zsh's output is impact by the TERM variable. We now override the
+ variable when running the zsh-related tests to make the test-suite pass.
+Author: Olivier Gayot <olivier.gayot@canonical.com>
+Bug: https://github.com/kislyuk/argcomplete/issues/496
+Bug-Debian: https://bugs.debian.org/1077792
+Bug-Ubuntu: https://launchpad.net/bugs/2075572
+Forwarded: https://github.com/kislyuk/argcomplete/pull/497
+Last-Update: 2024-08-02
+---
+This patch header follows DEP-3: http://dep.debian.net/deps/dep3/
+--- a/test/test.py
++++ b/test/test.py
+@@ -65,6 +65,7 @@
+ 
+ def _repl_sh(command, args, non_printable_insert):
+     os.environ["PS1"] = "$"
++    os.environ["TERM"] = ""
+     child = pexpect.spawn(command, args, echo=False, encoding="utf-8")
+     ps1 = PEXPECT_PROMPT[:5] + non_printable_insert + PEXPECT_PROMPT[5:]
+     ps2 = PEXPECT_CONTINUATION_PROMPT[:5] + non_printable_insert + PEXPECT_CONTINUATION_PROMPT[5:]

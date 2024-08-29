@@ -46,9 +46,17 @@ scripts/register-python-argcomplete
 test/__init__.py
 test/inputrc
 test/prog
+test/stuck
 test/test.py
 test/test_contrib_shells.py
 test/test_package/__init__.py
 test/test_package/setup.py
 test/test_package/test_module.py
+test/test_package/build/lib/test_module.py
+test/test_package/build/lib/test_package/__init__.py
 test/test_package/test_package/__init__.py
+test/test_package/test_package.egg-info/PKG-INFO
+test/test_package/test_package.egg-info/SOURCES.txt
+test/test_package/test_package.egg-info/dependency_links.txt
+test/test_package/test_package.egg-info/entry_points.txt
+test/test_package/test_package.egg-info/top_level.txt

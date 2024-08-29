@@ -1,3 +1,4 @@
 py3k-tests.patch
 tests_pip_fix.patch
 python-argcomplete-check-easy-install-script_help_fix.patch
+tests-mock-TERM.patch

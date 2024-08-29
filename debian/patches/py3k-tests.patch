@@ -14,7 +14,7 @@ Forwarded: not-needed
  3 files changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/scripts/activate-global-python-argcomplete b/scripts/activate-global-python-argcomplete
-index 7db46b7..03f4721 100755
+index 96017cb..cab027c 100755
 --- a/scripts/activate-global-python-argcomplete
 +++ b/scripts/activate-global-python-argcomplete
 @@ -1,4 +1,4 @@
@@ -34,7 +34,7 @@ index 614f50a..168ca36 100755
  """Test script used by test.TestBash."""
  
 diff --git a/test/test.py b/test/test.py
-index ca8ad0c..8217cbe 100755
+index c8f9419..cc3944f 100755
 --- a/test/test.py
 +++ b/test/test.py
 @@ -1,4 +1,4 @@
@@ -43,7 +43,7 @@ index ca8ad0c..8217cbe 100755
  import argparse
  import contextlib
  import os
-@@ -1355,7 +1355,7 @@ class TestBashGlobal(TestBash):
+@@ -1376,7 +1376,7 @@ class TestBashZshGlobalBase(TestBashZshBase):
              self.sh.run_command("export PATH=$PATH:./bin")
              self.sh.run_command("export PYTHONPATH=.:$PYTHONPATH")
              test_package = os.path.join(TEST_DIR, "test_package")
@@ -51,4 +51,4 @@ index ca8ad0c..8217cbe 100755
 +            command = "pip3 install {} --target .".format(test_package)
              if not wheel:
                  command += " --no-binary :all:"
-                 if sys.platform == "darwin":
+             install_output = self.sh.run_command(command)

@@ -1,3 +1,29 @@
+python-argcomplete (3.4.0-2) unstable; urgency=medium
+
+  * Team upload.
+  * d/p/tests-mock-TERM.patch: fix autopkgtest failure when the TERM variable
+    is set to "linux" (Closes: #1077792, LP: #2075572)
+
+ -- Olivier Gayot <olivier.gayot@canonical.com>  Fri, 02 Aug 2024 11:50:53 +0200
+
+python-argcomplete (3.4.0-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+
+ -- Colin Watson <cjwatson@debian.org>  Mon, 17 Jun 2024 12:47:04 +0100
+
+python-argcomplete (3.3.0-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release:
+    - Preserve compatibility with argparse option tuples of length 4.  This
+      update is required to use argcomplete on Python 3.11.9+ or 3.12.3+
+      (closes: #1069816, LP: #2063129).
+  * Mention zsh in package description (closes: #1061780).
+
+ -- Colin Watson <cjwatson@debian.org>  Fri, 26 Apr 2024 13:28:45 +0100
+
 python-argcomplete (3.1.4-1) unstable; urgency=medium
 
   * Team upload.
