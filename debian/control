@@ -27,13 +27,13 @@ Architecture: all
 Depends: ${misc:Depends}, ${python3:Depends}
 Breaks: python-argcomplete
 Replaces: python-argcomplete
-Description: bash tab completion for argparse (for Python 3)
+Description: bash/zsh tab completion for argparse (for Python 3)
  Argcomplete provides easy, extensible command line tab completion of
  arguments for your Python script.
  .
  It makes two assumptions:
  .
-  * You're using bash as your shell
+  * You're using bash or zsh as your shell
   * You're using argparse to manage your command line arguments/options
  .
  Argcomplete is particularly useful if your program has lots of

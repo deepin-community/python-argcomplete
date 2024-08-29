@@ -23,10 +23,10 @@ index 07961a2..f51061a 100755
  
  sys.tracebacklimit = 0
 diff --git a/test/test.py b/test/test.py
-index 8334b79..96e92cb 100755
+index 8db5718..e9a0e3a 100755
 --- a/test/test.py
 +++ b/test/test.py
-@@ -1357,7 +1357,7 @@ class TestBashGlobal(TestBash):
+@@ -1378,7 +1378,7 @@ class TestBashZshGlobalBase(TestBashZshBase):
              self.sh.run_command("cd " + os.getcwd())
              self.sh.run_command("export PATH=$PATH:./bin")
              self.sh.run_command("export PYTHONPATH=.:$PYTHONPATH")

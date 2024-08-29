@@ -8,6 +8,7 @@ import shutil
 import subprocess
 import sys
 import unittest
+import unittest.util
 from io import StringIO
 from tempfile import NamedTemporaryFile, TemporaryFile, mkdtemp
 
@@ -33,6 +34,9 @@ from argcomplete import (  # noqa: E402
 from argcomplete.completers import DirectoriesCompleter, FilesCompleter, SuppressCompleter  # noqa: E402
 from argcomplete.lexers import split_line  # noqa: E402
 
+# Default max length is insufficient for troubleshooting.
+unittest.util._MAX_LENGTH = 1000
+
 IFS = "\013"
 COMP_WORDBREAKS = " \t\n\"'><=;|&(:"
 
@@ -50,7 +54,11 @@ class ArgcompleteREPLWrapper(REPLWrapper):
                 raise Exception("Expected to see a newline in command response")
             echo_cmd, actual_res = res.split("\n", 1)
             res_without_ansi_seqs = re.sub(r"\x1b\[0m.+\x1b\[J", "", actual_res)
-            return res_without_ansi_seqs
+            # Unsure why some environments produce trailing null characters,
+            # but they break tests and trimming them seems to be harmless.
+            # https://github.com/kislyuk/argcomplete/issues/447
+            res_without_null_chars = res_without_ansi_seqs.rstrip("\x00")
+            return res_without_null_chars
         else:
             return res
 
@@ -65,14 +73,15 @@ def _repl_sh(command, args, non_printable_insert):
 
 
 def bash_repl(command="bash"):
-    bashrc = os.path.join(os.path.dirname(pexpect.__file__), "replwrap", "bashrc.sh")
+    bashrc = os.path.join(os.path.dirname(pexpect.__file__), "bashrc.sh")
     sh = _repl_sh(command, ["--rcfile", bashrc], non_printable_insert="\\[\\]")
     return sh
 
 
 def zsh_repl(command="zsh"):
     sh = _repl_sh(command, ["--no-rcs", "-V"], non_printable_insert="%(!..)")
-    sh.run_command("autoload compinit; compinit -u")
+    # Require two tabs to print all options (some tests rely on this).
+    sh.run_command("setopt BASH_AUTO_LIST")
     return sh
 
 
@@ -294,8 +303,8 @@ class TestArgcomplete(unittest.TestCase):
         for cmd, output in expected_outputs:
             self.assertEqual(set(self.run_completer(make_parser(), cmd)), set(output))
         zsh_expected_outputs = (
-            ("prog --url ", ["http://url1:foo", "http://url2:bar"]),
-            ('prog --url "', ["http://url1:foo", "http://url2:bar"]),
+            ("prog --url ", ["http\\://url1:foo", "http\\://url2:bar"]),
+            ('prog --url "', ["http\\://url1:foo", "http\\://url2:bar"]),
             ('prog --url "http://url1" --email ', ["a@b.c:", "a@b.d:", "ab@c.d:", "bcd@e.f:", "bce@f.g:"]),
             ('prog --url "http://url1" --email a', ["a@b.c:", "a@b.d:", "ab@c.d:"]),
             ('prog --url "http://url1" --email "a@', ["a@b.c:", "a@b.d:"]),
@@ -1239,20 +1248,26 @@ class TestShellBase:
 
 
 class TestBashZshBase(TestShellBase):
+    maxDiff = None
+
+    init_cmd = None
     # 'dummy' argument unused; checks multi-command registration works
     # by passing 'prog' as the second argument.
     install_cmd = 'eval "$(register-python-argcomplete dummy prog)"'
 
     def setUp(self):
         sh = self.repl_provider()
+        output = sh.run_command("echo ready")
+        self.assertEqual(output, "ready\r\n")
         path = ":".join([os.path.join(BASE_DIR, "scripts"), TEST_DIR, "$PATH"])
         sh.run_command("export PATH={0}".format(path))
         sh.run_command("export PYTHONPATH={0}".format(BASE_DIR))
-        if self.repl_provider == bash_repl:
-            # Disable the "python" module provided by bash-completion
-            sh.run_command("complete -r python python2 python3")
-        output = sh.run_command(self.install_cmd)
-        self.assertEqual(output, "")
+        if self.init_cmd is not None:
+            output = sh.run_command(self.init_cmd)
+            self.assertEqual(output, "")
+        if self.install_cmd is not None:
+            output = sh.run_command(self.install_cmd)
+            self.assertEqual(output, "")
         # Register a dummy completion with an external argcomplete script
         # to ensure this doesn't overwrite our previous registration.
         output = sh.run_command('eval "$(register-python-argcomplete dummy --external-argcomplete-script dummy)"')
@@ -1300,24 +1315,30 @@ class TestBash(TestBashZshBase, unittest.TestCase):
 
 
 class TestZsh(TestBashZshBase, unittest.TestCase):
-    expected_failures = [
+    init_cmd = "autoload compinit; compinit -u"
+
+    skipped = [
+        "test_parse_special_characters",
         "test_parse_special_characters_dollar",
         "test_comp_point",  # FIXME
         "test_completion_environment",  # FIXME
-        "test_continuation",  # FIXME
-        "test_wordbreak_chars",  # FIXME
     ]
-
-    def test_parse_special_characters(self):
-        pass  # FIXME: test crashes in teardown
 
     def repl_provider(self):
         return zsh_repl()
 
 
-@unittest.skipIf(BASH_MAJOR_VERSION < 4, "complete -D not supported")
-class TestBashGlobal(TestBash):
+class TestBashZshGlobalBase(TestBashZshBase):
     install_cmd = 'eval "$(activate-global-python-argcomplete --dest=-)"'
+
+    def test_redirection_completion(self):
+        with TempDir(prefix="test_dir_py", dir="."):
+            self.sh.run_command("cd " + os.getcwd())
+            self.sh.run_command("echo failure > ./foo.txt")
+            self.sh.run_command("echo success > ./foo.\t")
+            with open("foo.txt") as f:
+                msg = f.read()
+            self.assertEqual(msg, "success\n")
 
     def test_python_completion(self):
         self.sh.run_command("cd " + TEST_DIR)
@@ -1326,6 +1347,10 @@ class TestBashGlobal(TestBash):
     def test_python_filename_completion(self):
         self.sh.run_command("cd " + TEST_DIR)
         self.assertEqual(self.sh.run_command("python3 ./pro\tbasic f\t"), "foo\r\n")
+
+    def test_python_stuck(self):
+        self.sh.run_command("cd " + TEST_DIR)
+        self.sh.run_command("python3 ./stuck no\t-input")
 
     def test_python_not_executable(self):
         """Test completing a script that cannot be run directly."""
@@ -1358,9 +1383,6 @@ class TestBashGlobal(TestBash):
             command = "pip install {} --target .".format(test_package)
             if not wheel:
                 command += " --no-binary :all:"
-                if sys.platform == "darwin":
-                    # Work around https://stackoverflow.com/questions/24257803
-                    command += ' --install-option="--prefix="'
             install_output = self.sh.run_command(command)
             self.assertEqual(self.sh.run_command("echo $?"), "0\r\n", install_output)
             command = "test-module"
@@ -1369,25 +1391,38 @@ class TestBashGlobal(TestBash):
             command += " a\t"
             self.assertEqual(self.sh.run_command(command), "arg\r\n")
 
-    @unittest.skipIf(os.uname()[0] == "Darwin", "Skip test that fails on MacOS")
     def test_console_script_module(self):
         """Test completing a console_script for a module."""
         self._test_console_script()
 
-    @unittest.skipIf(os.uname()[0] == "Darwin", "Skip test that fails on MacOS")
     def test_console_script_package(self):
         """Test completing a console_script for a package."""
         self._test_console_script(package=True)
 
-    @unittest.skipIf(os.uname()[0] == "Darwin", "Skip test that fails on MacOS")
     def test_console_script_module_wheel(self):
         """Test completing a console_script for a module from a wheel."""
         self._test_console_script(wheel=True)
 
-    @unittest.skipIf(os.uname()[0] == "Darwin", "Skip test that fails on MacOS")
     def test_console_script_package_wheel(self):
         """Test completing a console_script for a package from a wheel."""
         self._test_console_script(package=True, wheel=True)
+
+
+@unittest.skipIf(BASH_MAJOR_VERSION < 4, "complete -D not supported")
+class TestBashGlobal(TestBash, TestBashZshGlobalBase):
+    pass
+
+
+class TestZshGlobalExplicit(TestZsh, TestBashZshGlobalBase):
+    pass
+
+
+class TestZshGlobalImplicit(TestZsh, TestBashZshGlobalBase):
+    # In zsh, the file is typically not sourced directly;
+    # it is added to fpath and autoloaded by the completion system.
+    zsh_fpath = os.path.join(os.path.abspath(os.path.dirname(argcomplete.__file__)), "bash_completion.d")
+    init_cmd = f'fpath=( {zsh_fpath} "${{fpath[@]}}" ); autoload compinit; compinit -u'
+    install_cmd = None
 
 
 class Shell:

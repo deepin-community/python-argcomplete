@@ -1,3 +1,67 @@
+Changes for v3.4.0 (2024-06-16)
+===============================
+
+-  No stdin for python calls from bash completion functions (#488)
+
+   Prevents usage of stdin by (python) executables that are called
+   during completion generation. This prevents the completion locking up
+   the entire shell when the python script is broken i.e. it enters an
+   interactive mode (REPL) instead of generating the completions, as
+   expected.
+
+-  Localize shell variable REPLY to avoid overwriting users’ value
+   (#489)
+
+   The variable REPLY is used by default by the ``read`` shell builtin
+   to store the return value, and like all bash/zsh variables, is scoped
+   globally. This change allows this variable to be used for other needs
+   by appropriately scoping its internal use by an argcomplete utility
+   function that uses ``read``.
+
+Changes for v3.3.0 (2024-04-14)
+===============================
+
+-  Preserve compatibility with argparse option tuples of length 4. This
+   update is required to use argcomplete on Python 3.11.9+ or 3.12.3+.
+
+Changes for v3.2.3 (2024-03-07)
+===============================
+
+-  Allow register-python-argcomplete output to be used as lazy-loaded
+   zsh completion module (#475)
+
+-  Move debug_stream initialization to helper method to allow fd 9
+   behavior to be overridden in subclasses (#471)
+
+Changes for v3.2.2 (2024-01-23)
+===============================
+
+Expand tilde in zsh
+
+Changes for v3.2.1 (2023-12-10)
+===============================
+
+-  Allow explicit zsh global completion activation (#467)
+
+Changes for v3.2.0 (2023-12-09)
+===============================
+
+-  Fix and test global completion in zsh (#463, #466)
+
+-  Add –yes option to activate-global-python-argcomplete (#461)
+
+-  Test suite improvements
+
+Changes for v3.1.6 (2023-11-12)
+===============================
+
+-  Respect user choice in activate-global-python-argcomplete
+
+Changes for v3.1.5 (2023-11-12)
+===============================
+
+-  Escape colon in zsh completions. Fixes #456
+
 Changes for v3.1.4 (2023-11-01)
 ===============================
 
