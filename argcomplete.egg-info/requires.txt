@@ -1,7 +1,0 @@
-
-[test]
-coverage
-pexpect
-wheel
-ruff
-mypy

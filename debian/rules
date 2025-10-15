@@ -15,7 +15,7 @@ export PYBUILD_TEST_ARGS=PATH={home_dir}/scripts:$$PATH \
 unexport LC_ALL
 
 %:
-	dh $@ --with python3 --buildsystem=pybuild
+	dh $@ --buildsystem=pybuild
 
 include /usr/share/dpkg/pkg-info.mk
 generate_manpages:

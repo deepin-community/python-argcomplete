@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # PYTHON_ARGCOMPLETE_OK
 
 # Copyright 2012-2023, Andrey Kislyuk and argcomplete contributors.
@@ -17,6 +17,9 @@ import sys
 
 import argcomplete
 
+# PEP 366
+__package__ = "argcomplete.scripts"
+
 zsh_shellcode = """
 # Begin added by argcomplete
 fpath=( {zsh_fpath} "${{fpath[@]}}" )
@@ -28,6 +31,13 @@ bash_shellcode = """
 source "{activator}"
 # End added by argcomplete
 """
+
+parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+parser.add_argument("-y", "--yes", help="automatically answer yes for all questions", action="store_true")
+parser.add_argument("--dest", help='Specify the shell completion modules directory to install into, or "-" for stdout')
+parser.add_argument("--user", help="Install into user directory", action="store_true")
+argcomplete.autocomplete(parser)
+args = None
 
 
 def get_local_dir():
@@ -81,6 +91,7 @@ def install_to_destination(dest):
 
 
 def get_consent():
+    assert args is not None
     if args.yes is True:
         return True
     while True:
@@ -111,44 +122,70 @@ def append_to_config_file(path, shellcode):
     print("Added.", file=sys.stderr)
 
 
-def link_user_rcfiles():
-    # TODO: warn if running as superuser
+def link_zsh_user_rcfile(zsh_fpath=None):
     zsh_rcfile = os.path.join(os.path.expanduser(os.environ.get("ZDOTDIR", "~")), ".zshenv")
-    append_to_config_file(zsh_rcfile, zsh_shellcode.format(zsh_fpath=get_activator_dir()))
+    append_to_config_file(zsh_rcfile, zsh_shellcode.format(zsh_fpath=zsh_fpath or get_activator_dir()))
 
+
+def link_bash_user_rcfile():
     bash_completion_user_file = os.path.expanduser("~/.bash_completion")
     append_to_config_file(bash_completion_user_file, bash_shellcode.format(activator=get_activator_path()))
 
 
-parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-parser.add_argument("-y", "--yes", help="automatically answer yes for all questions", action="store_true")
-parser.add_argument("--dest", help='Specify the shell completion modules directory to install into, or "-" for stdout')
-parser.add_argument("--user", help="Install into user directory", action="store_true")
-argcomplete.autocomplete(parser)
-args = parser.parse_args()
-destinations = []
+def link_user_rcfiles():
+    # TODO: warn if running as superuser
+    link_zsh_user_rcfile()
+    link_bash_user_rcfile()
 
-if args.dest:
-    if args.dest != "-" and not os.path.exists(args.dest):
-        parser.error(f"directory {args.dest} was specified via --dest, but it does not exist")
-    destinations.append(args.dest)
-elif site.ENABLE_USER_SITE and site.USER_SITE in argcomplete.__file__:
-    print(
-        "Argcomplete was installed in the user site local directory. Defaulting to user installation.", file=sys.stderr
-    )
-    link_user_rcfiles()
-elif sys.prefix != sys.base_prefix:
-    print("Argcomplete was installed in a virtual environment. Defaulting to user installation.", file=sys.stderr)
-    link_user_rcfiles()
-elif args.user:
-    link_user_rcfiles()
-else:
-    print("Defaulting to system-wide installation.", file=sys.stderr)
-    destinations.append(f"{get_zsh_system_dir()}/_python-argcomplete")
-    destinations.append(f"{get_bash_system_dir()}/python-argcomplete")
 
-for destination in destinations:
-    install_to_destination(destination)
+def add_zsh_system_dir_to_fpath_for_user():
+    if "zsh" not in os.environ.get("SHELL", ""):
+        return
+    try:
+        zsh_system_dir = get_zsh_system_dir()
+        fpath_output = subprocess.check_output([os.environ["SHELL"], "-c", 'printf "%s\n" "${fpath[@]}"'])
+        for fpath in fpath_output.decode().splitlines():
+            if fpath == zsh_system_dir:
+                return
+        link_zsh_user_rcfile(zsh_fpath=zsh_system_dir)
+    except (FileNotFoundError, subprocess.CalledProcessError):
+        pass
 
-if args.dest is None:
-    print("Please restart your shell or source the installed file to activate it.", file=sys.stderr)
+
+def main():
+    global args
+    args = parser.parse_args()
+
+    destinations = []
+
+    if args.dest:
+        if args.dest != "-" and not os.path.exists(args.dest):
+            parser.error(f"directory {args.dest} was specified via --dest, but it does not exist")
+        destinations.append(args.dest)
+    elif site.ENABLE_USER_SITE and site.USER_SITE and site.USER_SITE in argcomplete.__file__:
+        print(
+            "Argcomplete was installed in the user site local directory. Defaulting to user installation.",
+            file=sys.stderr,
+        )
+        link_user_rcfiles()
+    elif sys.prefix != sys.base_prefix:
+        print("Argcomplete was installed in a virtual environment. Defaulting to user installation.", file=sys.stderr)
+        link_user_rcfiles()
+    elif args.user:
+        link_user_rcfiles()
+    else:
+        print("Defaulting to system-wide installation.", file=sys.stderr)
+        destinations.append(f"{get_zsh_system_dir()}/_python-argcomplete")
+        destinations.append(f"{get_bash_system_dir()}/python-argcomplete")
+
+    for destination in destinations:
+        install_to_destination(destination)
+
+    add_zsh_system_dir_to_fpath_for_user()
+
+    if args.dest is None:
+        print("Please restart your shell or source the installed file to activate it.", file=sys.stderr)
+
+
+if __name__ == "__main__":
+    sys.exit(main())
