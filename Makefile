@@ -4,9 +4,9 @@ test_deps:
 	python -m pip install .[test]
 
 lint:
-	for dir in $$(dirname */__init__.py); do ruff $$dir; done
-	for script in scripts/*[^cmd]; do if grep -q python $$script; then ruff $$script; fi; done
-	mypy --install-types --non-interactive --check-untyped-defs argcomplete
+	for dir in $$(dirname */__init__.py); do ruff check $$dir; done
+	for script in scripts/*[^cmd]; do if grep -q python $$script; then ruff check $$script; fi; done
+	mypy --install-types --non-interactive argcomplete
 
 test:
 	coverage run --source=argcomplete --omit=argcomplete/packages/_shlex.py ./test/test.py -v

@@ -65,6 +65,7 @@ class ArgcompleteREPLWrapper(REPLWrapper):
 
 def _repl_sh(command, args, non_printable_insert):
     os.environ["PS1"] = "$"
+    os.environ["TERM"] = ""
     child = pexpect.spawn(command, args, echo=False, encoding="utf-8")
     ps1 = PEXPECT_PROMPT[:5] + non_printable_insert + PEXPECT_PROMPT[5:]
     ps2 = PEXPECT_CONTINUATION_PROMPT[:5] + non_printable_insert + PEXPECT_CONTINUATION_PROMPT[5:]
@@ -79,7 +80,7 @@ def bash_repl(command="bash"):
 
 
 def zsh_repl(command="zsh"):
-    sh = _repl_sh(command, ["--no-rcs", "-V"], non_printable_insert="%(!..)")
+    sh = _repl_sh(command, ["--no-rcs", "--no-globalrcs", "-V"], non_printable_insert="%(!..)")
     # Require two tabs to print all options (some tests rely on this).
     sh.run_command("setopt BASH_AUTO_LIST")
     return sh
@@ -1040,10 +1041,12 @@ class TestSplitLine(unittest.TestCase):
 
     def test_last_wordbreak_pos(self):
         self.assertEqual(self.wordbreak("a"), None)
+        self.assertEqual(self.wordbreak("a :b"), 0)
         self.assertEqual(self.wordbreak("a b:c"), 1)
         self.assertEqual(self.wordbreak("a b:c=d"), 3)
         self.assertEqual(self.wordbreak("a b:c=d "), None)
         self.assertEqual(self.wordbreak("a b:c=d e"), None)
+        self.assertEqual(self.wordbreak('":b'), None)
         self.assertEqual(self.wordbreak('"b:c'), None)
         self.assertEqual(self.wordbreak('"b:c=d'), None)
         self.assertEqual(self.wordbreak('"b:c=d"'), None)

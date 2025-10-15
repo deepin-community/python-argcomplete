@@ -1,1 +1,2 @@
-/usr/lib/python3/dist-packages/argcomplete/bash_completion.d/_python-argcomplete /usr/share/zsh/vendor-completions/_python-argcomplete
+# DISABLED, see #1101675
+#/usr/lib/python3/dist-packages/argcomplete/bash_completion.d/_python-argcomplete /usr/share/zsh/vendor-completions/_python-argcomplete

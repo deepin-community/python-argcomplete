@@ -1,3 +1,41 @@
+python-argcomplete (3.6.2-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Disable global zsh completion (Closes: #1101675), leaving bash as it
+    is working fine.
+  * Bump Standards-Version to 4.7.2 (no changes).
+
+ -- Marc Dequènes (Duck) <Duck@DuckCorp.org>  Tue, 08 Apr 2025 23:14:26 +0900
+
+python-argcomplete (3.6.1-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+
+ -- Colin Watson <cjwatson@debian.org>  Tue, 25 Mar 2025 18:05:01 +0000
+
+python-argcomplete (3.5.3-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream release.
+
+ -- Colin Watson <cjwatson@debian.org>  Thu, 02 Jan 2025 20:32:15 +0000
+
+python-argcomplete (3.5.2-1) unstable; urgency=medium
+
+  * New upstream release:
+    - Fix _parse_known_args monkeypatching (closes: #1087455, #1088723).
+
+ -- Colin Watson <cjwatson@debian.org>  Sun, 08 Dec 2024 00:01:53 +0000
+
+python-argcomplete (3.5.1-1) unstable; urgency=medium
+
+  * Team upload.
+  * New upstream version 3.5.1 (Closes: #1084328)
+  * Refresh patches
+
+ -- Alexandre Detiste <tchet@debian.org>  Wed, 23 Oct 2024 10:55:13 +0200
+
 python-argcomplete (3.4.0-2) unstable; urgency=medium
 
   * Team upload.
